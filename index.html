@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zcode-gr Archive</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #007bff; border-radius: 8px; font-size: 16px; outline: none; }
+        .article-card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 4px solid #007bff; }
+        .date { color: #888; font-size: 0.85em; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: bold; }
+        .text { white-space: pre-wrap; line-height: 1.6; color: #333; font-size: 1.05em; word-wrap: break-word; }
+        .media-container { margin-top: 15px; text-align: center; }
+        .media-container img, .media-container video { max-width: 100%; border-radius: 5px; border: 1px solid #ddd; }
+        .article-link { color: #007bff; font-weight: bold; cursor: pointer; text-decoration: underline; }
+        
+        /* Στυλ για τα εξωτερικά Links (Substack, Drive κλπ) */
+        .external-link { color: #28a745; text-decoration: underline; font-weight: 500; word-break: break-all; }
+        
+        .no-results { text-align: center; color: #999; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <input type="text" id="searchInput" class="search-box" placeholder="Αναζήτηση (π.χ. 752 ή Τέμπη)..." onkeyup="filterArticles()">
+    <div id="articlesWrapper"></div>
+</div>
+
+<script>
+    let allArticles = [];
+
+    fetch('datafixed.json')
+        .then(response => response.json())
+        .then(data => {
+            allArticles = data.rows || [];
+            displayArticles(allArticles);
+        })
+        .catch(err => console.error("Error:", err));
+
+    function displayArticles(articles) {
+        const wrapper = document.getElementById('articlesWrapper');
+        wrapper.innerHTML = '';
+
+        if (articles.length === 0) {
+            wrapper.innerHTML = '<div class="no-results">Δεν βρέθηκαν άρθρα.</div>';
+            return;
+        }
+
+        articles.forEach(item => {
+            let plainText = item.text || "";
+
+            // 1. Μετατροπή "άρθρο 123" σε εσωτερικά links
+            let linkedText = plainText.replace(/(άρθρο|αρθρου|αρθρα)\s+(\d+)/gi, (match, p1, p2) => {
+                return `<span class="article-link" onclick="jumpToArticle('${p2}')">${match}</span>`;
+            });
+
+            // 2. ΜΕΤΑΤΡΟΠΗ HTTPS ΣΕ ΚΛΙΚΑΡΙΣΙΜΑ LINKS (ΧΩΡΙΣ IFRAME)
+            linkedText = linkedText.replace(/(https?:\/\/[^\s]+)/g, (url) => {
+                return `<a href="${url}" target="_blank" class="external-link">${url}</a>`;
+            });
+
+            const card = document.createElement('div');
+            card.className = 'article-card';
+            
+            let mediaHtml = '';
+            if (item.media && item.media.trim() !== "") {
+                const filename = item.media.trim();
+                if (filename.toLowerCase().endsWith('.mp4')) {
+                    mediaHtml = `<div class="media-container"><video controls><source src="media/${filename}" type="video/mp4"></video></div>`;
+                } else {
+                    mediaHtml = `<div class="media-container"><img src="media/${filename}" alt="Media" loading="lazy"></div>`;
+                }
+            }
+
+            card.innerHTML = `
+                <div class="date">${item.date}</div>
+                <div class="text">${linkedText}</div>
+                ${mediaHtml}
+            `;
+            wrapper.appendChild(card);
+        });
+    }
+
+    function filterArticles() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = allArticles.filter(a => 
+            (a.text && a.text.toLowerCase().includes(query)) || 
+            (a.date && a.date.toLowerCase().includes(query))
+        );
+        displayArticles(filtered);
+    }
+
+    function jumpToArticle(id) {
+        document.getElementById('searchInput').value = id;
+        filterArticles();
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
