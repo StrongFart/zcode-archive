@@ -10,7 +10,8 @@
         /* Login Screen */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1877f2; z-index: 5000; display: flex; align-items: center; justify-content: center; color: white; flex-direction: column; }
         .login-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center; color: #1c1e21; width: 85%; max-width: 350px; }
-        .login-box h2 { margin-bottom: 20px; font-size: 22px; color: #1877f2; }
+        .login-box h2 { margin-bottom: 5px; font-size: 22px; color: #1877f2; }
+        .version-text { font-size: 12px; color: #606770; margin-bottom: 20px; font-weight: bold; }
         .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; text-align: center; outline: none; }
         .login-box button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
         .error-msg { color: #d32f2f; font-size: 14px; margin-top: 10px; display: none; font-weight: bold; }
@@ -37,20 +38,15 @@
         .text-preview { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; color: #1c1e21; font-size: 15px; margin-bottom: 10px; white-space: pre-wrap; }
         .more-btn { color: #1877f2; cursor: pointer; font-weight: 600; font-size: 15px; border: none; background: none; padding: 0; margin-bottom: 10px; outline: none; }
         
-        /* Media & Zoom Support */
+        /* Media Support */
         .media-container { margin-top: 10px; text-align: center; background: #000; border-radius: 4px; overflow: visible; line-height: 0; }
-        
-		/* Διόρθωση για Pinch-to-Zoom ΚΑΙ Scroll πάνω από εικόνες */
-        .media-container img, 
-        .media-container video { 
+        .media-container img, .media-container video { 
             max-width: 100%; 
             height: auto; 
             display: block; 
             margin: auto; 
-            /* Το pan-y επιτρέπει το scroll πάνω-κάτω, το pinch-zoom επιτρέπει το ζουμ */
             touch-action: pan-y pinch-zoom; 
         }
-        
         .external-link { color: #385898; text-decoration: none; word-break: break-all; font-weight: 500; }
     </style>
 </head>
@@ -59,6 +55,7 @@
 <div id="loginScreen">
     <div class="login-box">
         <h2>🔒 Zcode-gr Archive</h2>
+        <div id="loginVersion" class="version-text"></div>
         <input type="password" id="passInput" placeholder="Εισάγετε τον κωδικό">
         <button onclick="checkPassword()">Είσοδος</button>
         <div id="errorMsg" class="error-msg">Λάθος κωδικός!</div>
@@ -71,25 +68,25 @@
         <div class="header-title">Zcode Archive</div>
     </div>
 
-	<div id="mySidebar" class="sidebar">
-		<span class="closebtn" onclick="closeNav()">&times;</span>
-		<a><b>Zcode-gr Archive Ver.1.0.1 (Mobile)</b></a>
-		<hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
-		
-		<a href="javascript:void(0)" onclick="goHome()">🏠 Αρχική</a>
-		<a href="javascript:void(0)" onclick="filterQuick('Τέμπη')">🚆 Τέμπη</a>
-		<a href="javascript:void(0)" onclick="filterQuick('Ιράν')">🚀 Ιράν</a>
-		<a href="javascript:void(0)" onclick="filterQuick('ΑΟΖ')">🤽🏼‍♀️ AOZ</a>
-		
-		<hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+    <div id="mySidebar" class="sidebar">
+        <span class="closebtn" onclick="closeNav()">&times;</span>
+        <a href="javascript:void(0)"><b id="menuVersion"></b></a>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+        
+        <a href="javascript:void(0)" onclick="goHome()">🏠 Αρχική</a>
+        <a href="javascript:void(0)" onclick="filterQuick('Τέμπη')">🚆 Τέμπη</a>
+        <a href="javascript:void(0)" onclick="filterQuick('Ιράν')">🚀 Ιράν</a>
+        <a href="javascript:void(0)" onclick="filterQuick('ΑΟΖ')">🤽🏼‍♀️ AOZ</a>
+        
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
 
-		<a href="javascript:void(0)" onclick="window.open('https://zcode-gr.blogspot.com', '_system'); closeNav();">🛎 My Blogspot</a>
-		<a href="javascript:void(0)" onclick="window.open('https://x.com/ProfGZ', '_system'); closeNav();">🛎 My X.com</a>
-		<a href="javascript:void(0)" onclick="window.open('https://georgioszouganelis.substack.com', '_system'); closeNav();">🛎 My Substack</a>
-		<a href="javascript:void(0)" onclick="window.open('https://www.youtube.com/@ZcodeGr', '_system'); closeNav();">🛎 My YouTube</a>
-		<a href="javascript:void(0)" onclick="window.open('https://rumble.com/user/zcodegr', '_system'); closeNav();">🛎 My Rumble</a>
-		<a href="javascript:void(0)" onclick="window.open('https://www.facebook.com/Professor.G.Zouganelis', '_system'); closeNav();">🛎 My Facebook</a>		
-	</div>
+        <a href="javascript:void(0)" onclick="window.open('https://zcode-gr.blogspot.com', '_system'); closeNav();">🛎 My Blogspot</a>
+        <a href="javascript:void(0)" onclick="window.open('https://x.com/ProfGZ', '_system'); closeNav();">🛎 My X.com</a>
+        <a href="javascript:void(0)" onclick="window.open('https://georgioszouganelis.substack.com', '_system'); closeNav();">🛎 My Substack</a>
+        <a href="javascript:void(0)" onclick="window.open('https://www.youtube.com/@ZcodeGr', '_system'); closeNav();">🛎 My YouTube</a>
+        <a href="javascript:void(0)" onclick="window.open('https://rumble.com/user/zcodegr', '_system'); closeNav();">🛎 My Rumble</a>
+        <a href="javascript:void(0)" onclick="window.open('https://www.facebook.com/Professor.G.Zouganelis', '_system'); closeNav();">🛎 My Facebook</a>        
+    </div>
 
     <div id="overlay" class="overlay" onclick="closeNav()"></div>
 
@@ -101,6 +98,13 @@
 </div>
 
 <script>
+    // ΟΡΙΣΜΟΣ ΕΚΔΟΣΗΣ - Αλλάζεις μόνο εδώ και ενημερώνεται παντού
+    const APP_VERSION = "Ver. 1.0.1 (Mobile)";
+    
+    // Τοποθέτηση της έκδοσης στα IDs του HTML
+    document.getElementById('loginVersion').innerText = APP_VERSION;
+    document.getElementById('menuVersion').innerText = "Zcode-gr Archive " + APP_VERSION;
+
     let allArticles = [];
     const ENCODED_KEY = "emNvZGVub3c="; 
 
@@ -133,7 +137,6 @@
             });
     }
 
-    // Observer για αυτόματο Pause όταν το βίντεο βγαίνει από την οθόνη
     const videoObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (!entry.isIntersecting) {
@@ -167,7 +170,6 @@
                 const filename = item.media.trim();
                 const mediaUrl = `https://strongfart.github.io/zcode-archive/media/${filename}`;
                 if (filename.toLowerCase().endsWith('.mp4')) {
-                    // Χωρίς autoplay, με κλάση για τον observer
                     mediaHtml = `<div class="media-container"><video class="observer-video" controls style="width:100%"><source src="${mediaUrl}" type="video/mp4"></video></div>`;
                 } else {
                     mediaHtml = `<div class="media-container"><img src="${mediaUrl}" loading="lazy"></div>`;
@@ -191,7 +193,6 @@
             wrapper.appendChild(card);
         });
 
-        // Ενεργοποίηση Observer για τα νέα βίντεο
         document.querySelectorAll('.observer-video').forEach(v => videoObserver.observe(v));
         closeNav();
     }
