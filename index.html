@@ -19,12 +19,12 @@
         /* Main App Interface */
         #mainApp { display: none; }
         .header { background: #1877f2; color: white; padding: 10px 15px; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .menu-btn { font-size: 24px; cursor: pointer; margin-right: 15px; background: none; border: none; color: white; outline: none; }
+        .menu-btn { font-size: 20px; cursor: pointer; margin-right: 15px; background: none; border: none; color: white; outline: none; }
         .header-title { font-size: 18px; font-weight: bold; flex-grow: 1; }
 
         /* Sidebar & Overlay */
         .sidebar { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; left: 0; background-color: #ffffff; overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(0,0,0,0.2); }
-        .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: #1c1e21; display: block; border-bottom: 1px solid #f0f2f5; }
+        .sidebar a { padding: 15px 20px; text-decoration: none; font-size: 16px; color: #1c1e21; display: block; border-bottom: 1px solid #f0f2f5; }
         .sidebar .closebtn { position: absolute; top: 10px; right: 20px; font-size: 36px; cursor: pointer; color: #606770; }
         .overlay { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background: rgba(0,0,0,0.5); z-index: 1500; }
 
@@ -65,7 +65,7 @@
 <div id="mainApp">
     <div class="header">
         <button class="menu-btn" onclick="openNav()">&#9776;</button>
-        <div class="header-title">Zcode Archive</div>
+        <div class="header-title">Zcode-gr Archive</div>
     </div>
 
     <div id="mySidebar" class="sidebar">
@@ -99,7 +99,7 @@
 
 <script>
     // ΟΡΙΣΜΟΣ ΕΚΔΟΣΗΣ - Αλλάζεις μόνο εδώ και ενημερώνεται παντού
-    const APP_VERSION = "Ver. 1.0.1m";
+    const APP_VERSION = "Ver. 1.0.1";
     
     // Τοποθέτηση της έκδοσης στα IDs του HTML
     document.getElementById('loginVersion').innerText = APP_VERSION;
