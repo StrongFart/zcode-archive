@@ -38,15 +38,17 @@
         .text-preview { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; color: #1c1e21; font-size: 15px; margin-bottom: 10px; white-space: pre-wrap; }
         .more-btn { color: #1877f2; cursor: pointer; font-weight: 600; font-size: 15px; border: none; background: none; padding: 0; margin-bottom: 10px; outline: none; }
         
-        /* Media Support */
-        .media-container { margin-top: 10px; text-align: center; background: #000; border-radius: 4px; overflow: visible; line-height: 0; }
-        .media-container img, .media-container video { 
-            max-width: 100%; 
-            height: auto; 
-            display: block; 
-            margin: auto; 
-            touch-action: pan-y pinch-zoom; 
-        }
+		/* Media Support */
+		.media-container { text-align: center; background: #000; border-radius: 4px; overflow: visible; line-height: 0; }
+		.media-container img, .media-container video { 
+		max-width: 100%; 
+		height: auto; 
+		display: block; 
+		margin: auto; 
+		touch-action: auto; /* <--- ΤΟ ΚΑΝΑΜΕ AUTO */
+		}
+		
+		
         .external-link { color: #385898; text-decoration: none; word-break: break-all; font-weight: 500; }
         
         /* Νέο στυλ για τον μετρητή media */
