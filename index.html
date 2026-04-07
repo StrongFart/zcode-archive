@@ -40,14 +40,15 @@
         /* Media & Zoom Support */
         .media-container { margin-top: 10px; text-align: center; background: #000; border-radius: 4px; overflow: visible; line-height: 0; }
         
-        /* Διόρθωση για Pinch-to-Zoom στο Android */
+		/* Διόρθωση για Pinch-to-Zoom ΚΑΙ Scroll πάνω από εικόνες */
         .media-container img, 
         .media-container video { 
             max-width: 100%; 
             height: auto; 
             display: block; 
             margin: auto; 
-            touch-action: pinch-zoom; 
+            /* Το pan-y επιτρέπει το scroll πάνω-κάτω, το pinch-zoom επιτρέπει το ζουμ */
+            touch-action: pan-y pinch-zoom; 
         }
         
         .external-link { color: #385898; text-decoration: none; word-break: break-all; font-weight: 500; }
@@ -72,7 +73,7 @@
 
 	<div id="mySidebar" class="sidebar">
 		<span class="closebtn" onclick="closeNav()">&times;</span>
-		<a><b>Zcode-gr Archive Ver.1.0 (Mobile)</b></a>
+		<a><b>Zcode-gr Archive Ver.1.0.1 (Mobile)</b></a>
 		<hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
 		
 		<a href="javascript:void(0)" onclick="goHome()">🏠 Αρχική</a>
