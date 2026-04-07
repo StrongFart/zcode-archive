@@ -48,6 +48,9 @@
             touch-action: pan-y pinch-zoom; 
         }
         .external-link { color: #385898; text-decoration: none; word-break: break-all; font-weight: 500; }
+        
+        /* Νέο στυλ για τον μετρητή media */
+        .media-counter { color: #888; font-size: 12px; text-align: center; margin-top: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -98,10 +101,7 @@
 </div>
 
 <script>
-    // ΟΡΙΣΜΟΣ ΕΚΔΟΣΗΣ - Αλλάζεις μόνο εδώ και ενημερώνεται παντού
     const APP_VERSION = "Ver. 1.0.1";
-    
-    // Τοποθέτηση της έκδοσης στα IDs του HTML
     document.getElementById('loginVersion').innerText = APP_VERSION;
     document.getElementById('menuVersion').innerText = "Zcode-gr Archive " + APP_VERSION;
 
@@ -166,28 +166,53 @@
             card.className = 'article-card';
             
             let mediaHtml = '';
-            if (item.media && item.media.trim() !== "") {
-                const filename = item.media.trim();
-                const mediaUrl = `https://strongfart.github.io/zcode-archive/media/${filename}`;
-                if (filename.toLowerCase().endsWith('.mp4')) {
-                    mediaHtml = `<div class="media-container"><video class="observer-video" controls style="width:100%"><source src="${mediaUrl}" type="video/mp4"></video></div>`;
-                } else {
-                    mediaHtml = `<div class="media-container"><img src="${mediaUrl}" loading="lazy"></div>`;
+            let mediaCountHtml = '';
+            
+            if (item.media && String(item.media).trim() !== "") {
+                // 1. Σπάμε το string στα κόμματα, καθαρίζουμε τα κενά και πετάμε τα εντελώς άδεια
+                let mediaFiles = String(item.media)
+                                .split(',')
+                                .map(f => f.trim())
+                                .filter(f => f !== "");
+                
+                let mediaCount = mediaFiles.length;
+
+                if (mediaCount > 0) {
+                    // Φτιάχνουμε το γκρι κειμενάκι για τον μετρητή
+                    mediaCountHtml = `<div class="media-counter">Number of Media=${mediaCount}</div>`;
+
+                    // 2. Αν είμαστε στη λίστα, δείξε μόνο το [0]. Στο "more", δείξε όλο το Array
+                    let filesToDisplay = isSingle ? mediaFiles : [mediaFiles[0]];
+
+                    // 3. Δημιουργούμε το HTML για όσα αρχεία επιλέξαμε
+                    filesToDisplay.forEach(filename => {
+                        const mediaUrl = `https://strongfart.github.io/zcode-archive/media/${filename}`;
+                        if (filename.toLowerCase().endsWith('.mp4')) {
+                            mediaHtml += `<div class="media-container"><video class="observer-video" controls style="width:100%"><source src="${mediaUrl}" type="video/mp4"></video></div>`;
+                        } else {
+                            mediaHtml += `<div class="media-container"><img src="${mediaUrl}" loading="lazy"></div>`;
+                        }
+                    });
                 }
             }
 
+            // Συνδυάζουμε τα πάντα μέσα στην κάρτα
             if (!isSingle) {
                 card.innerHTML = `
                     <div class="date">${item.date}</div>
                     <div class="text-preview">${linkedText}</div>
                     <button class="more-btn" onclick="showSingle(${allArticles.indexOf(item)})">Δείτε περισσότερα...</button>
                     ${mediaHtml}
+                    ${mediaCountHtml}
                 `;
             } else {
                 card.innerHTML = `
                     <div class="date">${item.date}</div>
                     <div style="line-height:1.6; white-space:pre-wrap; font-size:15px; color:#1c1e21;">${linkedText}</div>
-                    ${mediaHtml}
+                    <div style="margin-top:20px;">
+                        ${mediaHtml}
+                        ${mediaCountHtml}
+                    </div>
                 `;
             }
             wrapper.appendChild(card);
