@@ -50,7 +50,13 @@
         .external-link { color: #385898; text-decoration: none; word-break: break-all; font-weight: 500; }
         
         /* Νέο στυλ για τον μετρητή media */
-        .media-counter { color: #888; font-size: 12px; text-align: center; margin-top: 5px; font-weight: bold; }
+		.media-counter {
+			color: #888; /* Γκρίζο χρώμα */
+			font-size: 12px; /* Μικρό μέγεθος */
+			text-align: center; /* Στοίχιση στο κέντρο */
+			margin-top: 5px; /* Κενό από πάνω */
+			font-weight: bold; /* Έντονα γράμματα */
+		}
     </style>
 </head>
 <body>
@@ -145,82 +151,73 @@
         });
     }, { threshold: 0.1 });
 
-    function displayArticles(articles, isSingle = false) {
-        const wrapper = document.getElementById('articlesWrapper');
-        const nav = document.getElementById('navigationArea');
-        const search = document.getElementById('searchInput');
-        
-        wrapper.innerHTML = '';
-        nav.innerHTML = '';
-        search.style.display = isSingle ? 'none' : 'block';
+function displayArticles(articles, isSingle = false) {
+    const wrapper = document.getElementById('articlesWrapper');
+    const nav = document.getElementById('navigationArea');
+    const search = document.getElementById('searchInput');
+    
+    wrapper.innerHTML = '';
+    nav.innerHTML = '';
+    search.style.display = isSingle ? 'none' : 'block';
 
-        if (isSingle) {
-            nav.innerHTML = '<span onclick="goBack()" style="color:#1877f2; cursor:pointer; font-weight:bold; display:inline-block; margin-bottom:15px;">← Επιστροφή στη λίστα</span>';
+    if (isSingle) {
+        nav.innerHTML = '<span onclick="goBack()" style="color:#1877f2; cursor:pointer; font-weight:bold; display:inline-block; margin-bottom:15px;">← Επιστροφή στη λίστα</span>';
+    }
+
+    articles.forEach((item) => {
+        let plainText = item.text || "";
+        let linkedText = plainText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="external-link">$1</a>');
+
+        const card = document.createElement('div');
+        card.className = 'article-card';
+        
+        let mediaHtml = '';
+        let mediaCount = 0; // Αρχικοποίηση του μετρητή
+
+        if (item.media && item.media.trim() !== "") {
+            // Σπάμε το string σε λίστα και καθαρίζουμε τα κενά
+            const mediaFiles = item.media.split(',').map(f => f.trim());
+            mediaCount = mediaFiles.length; // Υπολογισμός του αριθμού των media
+
+            // Αν είμαστε στη λίστα, δείξε μόνο το πρώτο. Στο "more", δείξε όλα
+            const filesToDisplay = isSingle ? mediaFiles : [mediaFiles[0]];
+
+            filesToDisplay.forEach(filename => {
+                const mediaUrl = `https://strongfart.github.io/zcode-archive/media/${filename}`;
+                if (filename.toLowerCase().endsWith('.mp4')) {
+                    mediaHtml += `<div class="media-container"><video class="observer-video" controls style="width:100%"><source src="${mediaUrl}" type="video/mp4"></video></div>`;
+                } else {
+                    mediaHtml += `<div class="media-container"><img src="${mediaUrl}" loading="lazy"></div>`;
+                }
+            });
         }
 
-        articles.forEach((item) => {
-            let plainText = item.text || "";
-            let linkedText = plainText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="external-link">$1</a>');
+        // Δημιουργία του HTML για τον μετρητή
+        let mediaCountHtml = '';
+        if (mediaCount > 0 && !isSingle) { // Εμφάνιση μόνο αν υπάρχουν media ΚΑΙ είμαστε στη λίστα
+            mediaCountHtml = `<div class="media-counter">Number of Media=${mediaCount}</div>`;
+        }
 
-            const card = document.createElement('div');
-            card.className = 'article-card';
-            
-            let mediaHtml = '';
-            let mediaCountHtml = '';
-            
-            if (item.media && String(item.media).trim() !== "") {
-                // 1. Σπάμε το string στα κόμματα, καθαρίζουμε τα κενά και πετάμε τα εντελώς άδεια
-                let mediaFiles = String(item.media)
-                                .split(',')
-                                .map(f => f.trim())
-                                .filter(f => f !== "");
-                
-                let mediaCount = mediaFiles.length;
-
-                if (mediaCount > 0) {
-                    // Φτιάχνουμε το γκρι κειμενάκι για τον μετρητή
-                    mediaCountHtml = `<div class="media-counter">Number of Media=${mediaCount}</div>`;
-
-                    // 2. Αν είμαστε στη λίστα, δείξε μόνο το [0]. Στο "more", δείξε όλο το Array
-                    let filesToDisplay = isSingle ? mediaFiles : [mediaFiles[0]];
-
-                    // 3. Δημιουργούμε το HTML για όσα αρχεία επιλέξαμε
-                    filesToDisplay.forEach(filename => {
-                        const mediaUrl = `https://strongfart.github.io/zcode-archive/media/${filename}`;
-                        if (filename.toLowerCase().endsWith('.mp4')) {
-                            mediaHtml += `<div class="media-container"><video class="observer-video" controls style="width:100%"><source src="${mediaUrl}" type="video/mp4"></video></div>`;
-                        } else {
-                            mediaHtml += `<div class="media-container"><img src="${mediaUrl}" loading="lazy"></div>`;
-                        }
-                    });
-                }
-            }
-
-            // Συνδυάζουμε τα πάντα μέσα στην κάρτα
-            if (!isSingle) {
-                card.innerHTML = `
-                    <div class="date">${item.date}</div>
-                    <div class="text-preview">${linkedText}</div>
-                    <button class="more-btn" onclick="showSingle(${allArticles.indexOf(item)})">Δείτε περισσότερα...</button>
-                    ${mediaHtml}
-                    ${mediaCountHtml}
+        if (!isSingle) {
+            card.innerHTML = `
+                <div class="date">${item.date}</div>
+                <div class="text-preview">${linkedText}</div>
+                <button class="more-btn" onclick="showSingle(${allArticles.indexOf(item)})">Δείτε περισσότερα...</button>
+                ${mediaHtml}
+                ${mediaCountHtml} `;
+        } else {
+            card.innerHTML = `
+                <div class="date">${item.date}</div>
+                <div style="line-height:1.6; white-space:pre-wrap; font-size:15px; color:#1c1e21;">${linkedText}</div>
+                ${mediaHtml}
                 `;
-            } else {
-                card.innerHTML = `
-                    <div class="date">${item.date}</div>
-                    <div style="line-height:1.6; white-space:pre-wrap; font-size:15px; color:#1c1e21;">${linkedText}</div>
-                    <div style="margin-top:20px;">
-                        ${mediaHtml}
-                        ${mediaCountHtml}
-                    </div>
-                `;
-            }
-            wrapper.appendChild(card);
-        });
+        }
+        wrapper.appendChild(card);
+    });
 
-        document.querySelectorAll('.observer-video').forEach(v => videoObserver.observe(v));
-        closeNav();
-    }
+    document.querySelectorAll('.observer-video').forEach(v => videoObserver.observe(v));
+    closeNav();
+}
 
     function showSingle(index) {
         window.scrollTo(0, 0);
