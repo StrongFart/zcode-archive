@@ -107,7 +107,7 @@
 </div>
 
 <script>
-    const APP_VERSION = "Ver. 1.0.5";
+    const APP_VERSION = "Ver. 1.0.6";
     document.getElementById('loginVersion').innerText = APP_VERSION;
     document.getElementById('menuVersion').innerText = "Zcode-gr Archive " + APP_VERSION;
 
@@ -130,8 +130,12 @@
         if (e.key === 'Enter') checkPassword();
     });
 
-    function loadData() {
-        const dataUrl = 'https://raw.githubusercontent.com/strongfart/zcode-archive/main/datafixed.json';
+	function loadData() {
+        // Προσθέτουμε την τρέχουσα ώρα στο link για να "ξεγελάμε" την cache του browser
+        // Έτσι θα κατεβάζει ΠΑΝΤΑ το πιο φρέσκο JSON!
+        const cacheBuster = new Date().getTime();
+        const dataUrl = 'https://raw.githubusercontent.com/strongfart/zcode-archive/main/datafixed.json?v=' + cacheBuster;
+        
         fetch(dataUrl)
             .then(response => response.json())
             .then(data => {
